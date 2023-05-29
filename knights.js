@@ -12,6 +12,7 @@ class ChessBoard {
         this.chessBoard.set(JSON.stringify([i, k]), []);
   }
 
+  //add edges using an adjacency list
   addEdges(board = this.chessBoared) {
     //create a table with all possible moves (x,y)
     const moves = [
@@ -22,7 +23,7 @@ class ChessBoard {
       [-1, -2],
       [-2, -1],
       [-2, 1],
-      [1, 2],
+      [-1, 2],
     ];
 
     for (const square of this.chessBoard.keys()) {
@@ -33,22 +34,65 @@ class ChessBoard {
 
         //If the square exists on the board, add the edge to it's list
         const compare = JSON.stringify([newPositionX, newPositionY]);
-        if (this.chessBoard.has(compare)) {
-          this.chessBoard.get(compare).push(compare);
-          console.log("should be adding here");
-        }
+        if (this.chessBoard.has(compare))
+          this.chessBoard.get(square).push(compare);
       });
     }
-
-    //add edges using an adjacency list
   }
-  print() {
-    this.chessBoard.forEach((elem) => {
-      console.log(elem);
+
+  findPath(start, end) {
+    let startKey = JSON.stringify(start);
+    const endKey = JSON.stringify(end);
+    const queue = [
+      {
+        key: startKey,
+        distance: 0,
+        path:[]
+      },
+    ];
+
+    let currentVertice;
+    let i = 0;
+    while (queue.length > 0) {
+      console.log("iteration: " + i++);
+
+      currentVertice = queue.shift();
+      startKey = currentVertice.key;
+      console.log ('starting new comparison: ' + startKey);
+      console.log("comparing " + startKey + " and " + endKey);
+      if (startKey === endKey) break;
+      const list = this.chessBoard.get(currentVertice.key);
+      list.forEach((neighbour) => {
+        queue.push({
+          key: neighbour,
+          distance: currentVertice.distance + 1,
+          path:path.push(startKey)
+        });
+        console.log("pushing on to the queue: " + neighbour);
+        // console.log (queue);
+      });
+      if (i > 10) break;
+    }
+    console.log("found with a distance of " + currentVertice.distance);
+
+    /*
+
+    list.forEach((elem) => {
+        queue.push({
+            node: elem,
+            distance: 1
+        })
     });
-    /*   for (const keys of this.chessBoard.keys()) {
-      console.log(keys);
-    }*/
+
+   console.log(queue);*/
+  }
+
+  print() {
+    console.log([...this.chessBoard.entries()]);
+
+    console.log([...this.chessBoard.keys()]);
+
+    console.log([...this.chessBoard.values()]);
   }
 }
 
@@ -56,3 +100,6 @@ const chessBoard = new ChessBoard();
 chessBoard.addVertices();
 chessBoard.addEdges();
 //chessBoard.print();
+chessBoard.findPath([0, 0], [1, 2]);
+chessBoard.findPath([3, 1], [2, 2]);
+chessBoard.findPath([7, 7], [7, 6]);
