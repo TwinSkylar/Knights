@@ -47,7 +47,7 @@ class ChessBoard {
       {
         key: startKey,
         distance: 0,
-        path:[]
+        path: [],
       },
     ];
 
@@ -55,36 +55,40 @@ class ChessBoard {
     let i = 0;
     while (queue.length > 0) {
       console.log("iteration: " + i++);
-
       currentVertice = queue.shift();
-      startKey = currentVertice.key;
-      console.log ('starting new comparison: ' + startKey);
-      console.log("comparing " + startKey + " and " + endKey);
-      if (startKey === endKey) break;
+      currentVertice.path.push(currentVertice.key);
+      console.log("The path to this node is: " + currentVertice.path);
+      console.log("comparing " + currentVertice.key + " and " + endKey);
+      if (currentVertice.key === endKey) {
+        console.log("wtf");
+        break;
+      }
       const list = this.chessBoard.get(currentVertice.key);
       list.forEach((neighbour) => {
-        queue.push({
+        const temp = {
           key: neighbour,
           distance: currentVertice.distance + 1,
-          path:path.push(startKey)
-        });
-        console.log("pushing on to the queue: " + neighbour);
-        // console.log (queue);
+        };
+        temp.path = [...currentVertice.path];
+        queue.push(temp);
       });
-      if (i > 10) break;
+      console.log ('closing with a queue of: ' + queue.length);
     }
-    console.log("found with a distance of " + currentVertice.distance);
+    console.log(
+      "** found with a distance of " + currentVertice.distance + " ****"
+    );
+    console.log("here is the path:  " + currentVertice.path);
 
     /*
-
-    list.forEach((elem) => {
-        queue.push({
-            node: elem,
-            distance: 1
-        })
-    });
-
-   console.log(queue);*/
+    Check the top node for a match
+    while the queue is not empty
+    grab the first node on the queue
+    check if it is a match
+    if not a match push all it's children
+      each children should increase it's distance by one
+      each children adopt the path of it's parent
+      add the path of itself
+   */
   }
 
   print() {
