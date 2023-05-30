@@ -1,8 +1,13 @@
 class ChessBoard {
   constructor() {
-    this.chessBoard = new Map();
+    this.chessBoard = new Map(); //Holds a chessboard and a graph of all possible knight moves for each sqaure
   }
 
+  /*
+  Purpose:  Builds a chess board with each square a co-ordinate and and empty array for an adjacency list
+  Parameters: none
+  Return:  none
+  */
   addVertices() {
     const size = 8; //standard chessboard size
 
@@ -12,7 +17,11 @@ class ChessBoard {
         this.chessBoard.set(JSON.stringify([i, k]), []);
   }
 
-  //add edges using an adjacency list
+  /*
+  Purpose:  Fills out the adjacency list for each square
+  Parameters: none
+  Return:  none
+  */
   addEdges(board = this.chessBoared) {
     //create a table with all possible moves (x,y)
     const moves = [
@@ -40,6 +49,13 @@ class ChessBoard {
     }
   }
 
+    /*
+  Purpose:  Finds the distance and path using a knights movement
+  Parameters: 
+    start: the starting position of the knight
+    end: the end position of the knight
+  Return:  none
+  */
   findPath(start, end) {
     let startKey = JSON.stringify(start);
     const endKey = JSON.stringify(end);
@@ -52,15 +68,10 @@ class ChessBoard {
     ];
 
     let currentVertice;
-    let i = 0;
     while (queue.length > 0) {
-      console.log("iteration: " + i++);
       currentVertice = queue.shift();
       currentVertice.path.push(currentVertice.key);
-      console.log("The path to this node is: " + currentVertice.path);
-      console.log("comparing " + currentVertice.key + " and " + endKey);
       if (currentVertice.key === endKey) {
-        console.log("wtf");
         break;
       }
       const list = this.chessBoard.get(currentVertice.key);
@@ -72,23 +83,11 @@ class ChessBoard {
         temp.path = [...currentVertice.path];
         queue.push(temp);
       });
-      console.log ('closing with a queue of: ' + queue.length);
     }
     console.log(
-      "** found with a distance of " + currentVertice.distance + " ****"
+      `It took ${currentVertice.distance} step(s) to get from ${start} to ${end}.`
     );
-    console.log("here is the path:  " + currentVertice.path);
-
-    /*
-    Check the top node for a match
-    while the queue is not empty
-    grab the first node on the queue
-    check if it is a match
-    if not a match push all it's children
-      each children should increase it's distance by one
-      each children adopt the path of it's parent
-      add the path of itself
-   */
+    console.log(`Here are the steps:  ${currentVertice.path}`);
   }
 
   print() {
@@ -105,5 +104,7 @@ chessBoard.addVertices();
 chessBoard.addEdges();
 //chessBoard.print();
 chessBoard.findPath([0, 0], [1, 2]);
+chessBoard.findPath([0, 0], [3, 3]);
+chessBoard.findPath([3, 3], [3, 3]);
 chessBoard.findPath([3, 1], [2, 2]);
 chessBoard.findPath([7, 7], [7, 6]);
